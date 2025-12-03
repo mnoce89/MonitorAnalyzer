@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Match Analyzer</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Tesseract + WORKER PATH FIX -->
+    <script>
+        window.Tesseract = window.Tesseract || {};
+        Tesseract.workerPath = "https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/worker.min.js";
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
 </head>
 <body>
@@ -45,3 +51,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
