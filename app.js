@@ -1,37 +1,64 @@
-// Funzione generica OCR che restituisce il testo estratto
-async function ocrImage(file, outputElementId) {
-    document.getElementById(outputElementId).innerText = "Elaborazione in corso...";
+// ========= OCR MULTI-IMMAGINE ========= //
 
-    const { createWorker } = Tesseract;
-    const worker = await createWorker();
+async function extractMultiple(files) {
+    if (!files || files.length === 0) return "";
 
-    await worker.loadLanguage("ita");
-    await worker.initialize("ita");
+    const worker = await Tesseract.createWorker("ita");
 
-    const { data } = await worker.recognize(file);
+    let texts = [];
+
+    for (let file of files) {
+        const { data } = await worker.recognize(file);
+        texts.push(data.text);
+    }
+
     await worker.terminate();
 
-    document.getElementById(outputElementId).innerText = data.text;
+    return mergeOCR(texts);
 }
 
-// --- Gestione upload immagine 45' ---
-document.getElementById("img45").addEventListener("change", function () {
-    const file = this.files[0];
-    if (file) {
-        ocrImage(file, "result45");
-    }
-});
+// Unisce i risultati OCR per ottenere un testo più pulito
+function mergeOCR(textArray) {
+    let merged = textArray.join("\n");
 
-// --- Pulsante calcolo finale (solo livello 1 per ora) ---
-document.getElementById("calculateBtn").addEventListener("click", () => {
+    // Pulizia base
+    merged = merged
+        .replace(/\s+/g, " ")   // rimuove spazi doppi
+        .replace(/[\|•]/g, "")  // rimuove simboli inutili
+        .trim();
+
+    return merged;
+}
+
+
+// ========= GESTIONE BUTTON "CALCOLA" ========= //
+
+document.getElementById("calculateBtn").addEventListener("click", async () => {
+    
     let favorite = document.getElementById("favorite").value;
 
-    let baseScore = 0;
+    // Punteggio base dal livello 1
+    let baseScore = (favorite === "even") ? 4 : 8;
 
-    if (favorite === "home") baseScore = 8;
-    else if (favorite === "away") baseScore = 8;
-    else baseScore = 4;
+    // Carichiamo i file delle immagini
+    let files45 = document.getElementById("img45").files;
+    let files60 = document.getElementById("img60").files;
+    let files75 = document.getElementById("img75").files;
+
+    // Eseguiamo OCR multiplo
+    let text45 = await extractMultiple(files45);
+    let text60 = await extractMultiple(files60);
+    let text75 = await extractMultiple(files75);
+
+    // Mostra anteprima testo
+    document.getElementById("result45").innerText = text45;
+    document.getElementById("result60").innerText = text60;
+    document.getElementById("result75").innerText = text75;
+
+    // Punteggio finale provvisorio (poi lo evolviamo)
+    let finalScore = baseScore;
 
     document.getElementById("finalScore").innerText =
-        "Punteggio parziale (solo livello 1): " + baseScore;
+        "Punteggio parziale: " + finalScore + " / 100";
 });
+
