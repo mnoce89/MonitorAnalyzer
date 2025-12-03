@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+<h1>Match Analyzer – Caso Studio</h1>
+
+<div class="section">
+    <h2>1. Seleziona Favorita</h2>
+    <select id="favorite">
+        <option value="home">Casa favorita</option>
+        <option value="away">Ospite favorita</option>
+        <option value="even">Equilibrio</option>
+    </select>
+</div>
+
+<div class="section">
+    <h2>2. Carica immagine 45'</h2>
+    <input type="file" id="img45">
+    <div id="result45"></div>
+</div>
+
+<div class="section">
+    <h2>3. Carica immagine 60'</h2>
+    <input type="file" id="img60">
+    <div id="result60"></div>
+</div>
+
+<div class="section">
+    <h2>4. Carica immagine 75'</h2>
+    <input type="file" id="img75">
+    <div id="result75"></div>
+</div>
+
+<div class="section">
+    <button id="calculateBtn">Calcola punteggio finale</button>
+    <h2 id="finalScore"></h2>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
